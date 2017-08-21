@@ -1,6 +1,4 @@
- <<TableOfContents>>
- 
- ## name styling
+  ## name styling
 
 variables =  nombre_variable
 constantes = CONSTANT_VARIABLE
@@ -12,7 +10,7 @@ punto y coma no necesario, sólo si se quiere tener dos sentences en una misma l
 irb => es el REPL de ruby
 
 *************************************
-flow control
+ ## flow control
 if/elsif/else
 case
 ultil/unless?
@@ -38,11 +36,11 @@ end
 
 imprime 9
 *********************************************
-true/false
+ ## true/false
 
 false and nil are false, everything else are TRUE ******* 0, 'false', '', 'nil' are true
 ***************************************
-case
+ ## case
 two flavors
 
 #first flavor
@@ -64,12 +62,14 @@ case name
 end
 
 ********************************
-for: Almost never used, instead times/each is used
+ ## for: 
+ Almost never used, instead times/each is used
 
 for i in 0..2
 	puts i
 end
 *******************************************************
+ ## ===
 === is the pattern matching operator!
 
 === matches regular expressions
@@ -78,7 +78,7 @@ end
 === calls lambda expressions
 === sometimes checks equality, but mostly it does not
 *********************************************************
-functions and methods
+ ## functions and methods
 generally a function is defined outside of a class and a method is defined inside a class
 in Ruby all class or method belongs at leat one class, but not always writtern inside a class
  * parens it is not necesary
@@ -94,7 +94,7 @@ end
 
 if for call don´t send value takes 5
 **************************************************
-splat
+ ## splat
 
 def max(prueba, *numbers, prueba1)
         numbers.max
@@ -102,7 +102,7 @@ end
 
  p max('hola',1,2,3,5,6,7,100,'hola1')
 ***************************************************
-blocks
+ ## blocks
 
 portions of code, used with:
 
