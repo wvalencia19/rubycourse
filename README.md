@@ -5,7 +5,7 @@ constantes = CONSTANT_VARIABLE
 Clases y módulos = CamelCase
 
 punto y coma no necesario, sólo si se quiere tener dos sentences en una misma linea
- a = 1; b =2
+ ```ruby a = 1; b =2 ```
 
 irb => es el REPL de ruby
 
@@ -28,6 +28,7 @@ end
 
 imprime 10
 
+```ruby
 until
 
 a = 9
@@ -35,7 +36,7 @@ until a >= 10
 	puts a
 	a += 1
 end
-
+```
 imprime 9
 *********************************************
  ## true/false
@@ -46,6 +47,7 @@ false and nil are false, everything else are TRUE ******* 0, 'false', '', 'nil' 
 two flavors
 
 #first flavor
+```ruby
 age = 21
 case
 	when age >= 21
@@ -55,30 +57,35 @@ case
 	else
 		puts "Default condition"
 end
-#second flavor
+```
 
+#second flavor
+```ruby
 name  = 'Fisher'
 case name
 	when /fish/i then puts "Something is fishy here"
 	when 'Smith' then puts "Your name is Smith"
 end
-
+```
 ********************************
  ## for: 
  Almost never used, instead times/each is used
-
+ 
+```ruby
 for i in 0..2
 	puts i
 end
+```
 *******************************************************
  ## ===
 === is the pattern matching operator!
-
+```ruby
 === matches regular expressions
 === checks range membership
 === checks being instance of a class
 === calls lambda expressions
 === sometimes checks equality, but mostly it does not
+```
 *********************************************************
  ## functions and methods
 generally a function is defined outside of a class and a method is defined inside a class
@@ -90,19 +97,21 @@ in Ruby all class or method belongs at leat one class, but not always writtern i
  * return is optional
 
 default values for parameters
+```ruby
 def factorial(n = 5)
 	n == 0? 1 : n * factorial(n - 1)
 end
-
+```
 if for call don´t send value takes 5
 **************************************************
  ## splat
-
+```ruby
 def max(prueba, *numbers, prueba1)
         numbers.max
 end
 
  p max('hola',1,2,3,5,6,7,100,'hola1')
+ ```
 ***************************************************
  ## blocks
 
@@ -113,6 +122,7 @@ do end  -> better when multiple lines
 
 is possible send parameters, example |index|
 
+```ruby
 1.times {puts 'Hello world!'}
 
 2.times do |index| 
@@ -120,7 +130,8 @@ is possible send parameters, example |index|
 		puts index
 	end
 end
-shows 1
+#shows 1
 
 2.times {|index| puts index if index > 0}
+```
 ****************************************************
