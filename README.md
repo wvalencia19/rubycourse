@@ -3,7 +3,11 @@
 * puts(print strings to console): similar to System.out.println() in java
 * p: prints internal representation of an object
 *********************
-### Pame styling
+### Find methods for object
+
+"hello".methods.grep /case/
+*********************
+### Name styling
 
 variables =  nombre_variable
 constantes = CONSTANT_VARIABLE
@@ -224,7 +228,7 @@ end
 	puts ENV['EDITOR']
 ```
 ***********************
-## Strings
+# Strings
 1. Single quote '' : 
 * Very literal
 * Allow scaping of ' with \
@@ -233,3 +237,56 @@ end
 * Interpret special characters like \n
 * Permit interpolation
 
+### Interpolation
+```ruby
+def multiply(one, two)
+	"#{one} multiplied by #{two} is equals #{one * two}"
+end
+
+puts multiply(3,5) # => 3 multiplied by 5 is equals 15
+```
+```ruby
+my_name = " tim"
+puts my_name.lstrip.capitalize # => Tim
+p my_name # => " tim" #because returns a copy of my_name
+puts my_name.lstrip! #(!)saves remove for the space
+my_name[0] = 'K' # replaces te fitst character
+puts my_name = Kim
+
+cur_weather = #Q{It's a hot day outside
+		 Grab your umbrellas...
+		}
+cur_weather.lines do |line|
+	line.sub! 'hot', 'rainy' #substitute 'hot' with 'rainy'
+	puts "#{line.strip}"
+end
+# => It's a raint day outside
+# => Grab your umbrellas...
+```
+### Symbols
+Highly optimized strings
+* Constant names that you don't have to pre-declarate
+* Cadena que representa algo
+* Does not matter the exactly string, if is uppercase or lowercase
+```ruby
+:foo
+```
+************
+# Arrays
+
+* Collection of object references (auto expandable), don't have specific limit
+* Indexed using [] operator(method)
+* Can be indexed with negative numbers or ranges
+* Heterogeneous types
+* Can use %w{str1 str2} for string array creation
+
+```ruby
+het_arr = [1, "two", :three] 
+puts het_arr[1] # => two (array indices starts at 0)
+arr_words = %w{ what a day great today! }
+puts arr_words[-2]  # => great
+puts "#{arr_words.first} - #{arr_words.last}" => what - today!
+p arr_words[-3,2] # => ["day","great"] (go back 3 and take 2)
+p arr_words[2..4] # => ["day", "great", "today!"] (range)
+puts arr_words.join(',') # => what,a,day,great,today! (make a string separated by ',')
+```
