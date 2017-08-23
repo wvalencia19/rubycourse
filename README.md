@@ -332,7 +332,7 @@ p new_arr # => [1, 3, 7]
 new_arr = a.map { |x| x * 3 }
 p new_arr # => [3, 9, 12, 21, 24, 30]
 ```
-### Ranges
+# Ranges
 
 Express natural consecutive secuences
 
@@ -363,7 +363,7 @@ end
 
 ```
 
-### Hashes
+# Hashes
 
 * Indexed  collections of object references
 * Created with {} or Hash.new
