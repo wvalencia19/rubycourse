@@ -427,3 +427,100 @@ adjust_colors({foreground: 'green'}) # => Foreground: green
 adjust_colors background: 'yella' # => Background: yella
 adjust_colors :background => 'magneta' # => Background: magneta
 ```
+
+### Block and Hash Confusion
+
+```ruby
+# Let's say you have a Hash
+a_hash = { :one => "one" }
+
+# Then, you output it
+puts a_hash # => {:one=>"one"}
+
+# If you try to do it in one step - you get a SyntaxError
+# puts { :one => "one" }
+
+# RUBY GETS CONFUSED AND THINKS {} IS A BLOCK!!!
+
+# To get around this - you can use parens
+puts ({ :one => "one" }) # => {:one=>"one"}
+
+# Or drop the {} altogether...
+puts one: "one"# => {:one=>"one"}
+```
+
+# Object Oriented
+### Classes
+
+* Are things(car,person, etc), containers of methods(behavior)
+* Objects are instances of those things
+* Objects contains instance variables(state), example @color
+
+### Instance Variables
+* Begin with @
+* Not declared
+* Available to all instance methods of the class
+
+
+* New creates an instance of class, this causes initialize(constructor)
+* Objects can be (should be) initialized inside initialize method
+
+```ruby
+class Person
+  def initialize (name, age) # "CONSTRUCTOR"
+    @name = name
+    @age = age
+  end
+  def get_info
+    @additional_info = "Interesting"
+    "Name: #{@name}, age: #{@age}"
+  end
+end
+
+person1 = Person.new("Joe", 14)
+p person1.instance_variables # [:@name, :@age]
+puts person1.get_info # => Name: Joe, age: 14
+p person1.instance_variables # [:@name, :@age, :@additional_info]
+```
+* Is not possible have access to instance variables directly(are private), for that is necesary create get and set methods
+* For default the methods have public access
+```ruby
+class Person
+  def initialize (name, age) # "CONSTRUCTOR"
+    @name = name
+    @age = age
+  end
+  def name
+  	@name
+  end
+  def name= (new_name) 
+  	@name = new_name 	
+  end
+end
+
+person1 = Person.new("Joe", 14)
+puts person1.name # Joe
+person1.name = "Mike"
+puts person1.name # Mike
+# puts person1.age # undefined method `age' for #<Person:
+```
+# Exist a easier way to define get and set methods
+* Use attr_* 
+* attr_accessor => getter and setter
+* attr_reader => getter only
+* attr_writter => setter only
+
+```ruby
+class Person
+  attr_accessor :name, :age # getters and setters for name and age
+end
+
+person1 = Person.new
+p person1.name # => nil
+person1.name = "Mike"
+person1.age = 15
+puts person1.name # => Mike
+puts person1.age # => 15
+person1.age = "fifteen"
+puts person1.age # => fifteen
+```
