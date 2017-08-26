@@ -655,6 +655,8 @@ match1.score = 45; puts match1.score # => 45
 
 match2 = Patterns::Match.new
 match2.complete = true; puts match2.complete # => true
+
+
 ##Mix-in
 module SayMyName
   attr_accessor :name
