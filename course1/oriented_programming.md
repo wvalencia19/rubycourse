@@ -382,3 +382,75 @@ end
 puts
 puts adjustment # => 5 (Not affected by the block)
 ```
+### Access Control
+* Three levels for access control
+ 1. Public
+ 2. Protected
+ 3. Private
+ 
+ ```ruby
+ class Car
+  def initialize(speed, comfort)
+    @rating = speed * comfort
+  end
+
+  # Can't SET rating from outside
+  def rating
+    @rating
+  end
+end
+
+puts Car.new(4, 5).rating # => 20
+ ```
+ * Two ways to specify access control:
+  1. Specify public, protected or private: everything until the next access control key will be that control access.
+  2. List the methods for access control type, example private :method1, :method2
+  
+  ```ruby
+  class MyAlgorithm
+  private
+    def test1
+      "Private"
+    end
+  protected
+    def test2
+      "Protected"
+    end
+  public
+    def public_again
+      "Public"
+    end
+end
+
+class Another
+  def test1
+    "Private, as declated later on"
+  end
+  private :test1
+end
+```
+ 
+* By default, all mehtod have public access control
+* protected: can be invoked by the objects of the definig class or its subclasses
+* private: can't be invoked with an explicit receiver. Exception: Setting attribute.
+
+```ruby
+class Person
+  def initialize(age)
+        self.age = age # LEGAL - EXCEPTION
+        puts my_age
+        # puts self.my_age # ILLEGAL
+                           # CANNOT USE self or any other receiver
+  end
+
+  private
+    def my_age
+        @age
+    end
+    def age=(age)
+      @age = age
+    end
+end
+
+Person.new(25) # => 25
+```
