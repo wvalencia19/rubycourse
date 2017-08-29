@@ -402,12 +402,13 @@ end
 
 puts Car.new(4, 5).rating # => 20
  ```
+ 
  * Two ways to specify access control:
   1. Specify public, protected or private: everything until the next access control key will be that control access.
-  2. List the methods for access control type, example private :method1, :method2
-  
-  ```ruby
-  class MyAlgorithm
+  2. List the methods for access control type. Example: private :method1, :method2
+   
+```ruby
+  class MyAlgorithm
   private
     def test1
       "Private"
