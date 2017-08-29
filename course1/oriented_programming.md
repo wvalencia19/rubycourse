@@ -228,3 +228,157 @@ company = Company.new
 company.name = "Google & Microsoft LLC"
 company.print_name # => Name: Google & Microsoft LLC
 ```
+### Enumerable Module
+* You can include in your own class
+* Provide map, select, reject, etc methods
+* Used by array class and other class
+* Provide an implementation for each method
+```ruby
+# name of file - player.rb
+class Player
+
+  attr_reader :name, :age, :skill_level
+
+  def initialize (name, age, skill_level)
+    @name = name
+    @age = age
+    @skill_level = skill_level
+  end
+
+  def to_s
+    "<#{name}: #{skill_level}(SL), #{age}(AGE)>"
+  end
+
+end
+
+# team.rb
+class Team
+  include Enumerable # LOTS of functionality
+
+  attr_accessor :name, :players
+  def initialize (name)
+    @name = name
+    @players = []
+  end
+  def add_players (*players) # splat
+    @players += players
+  end
+  def to_s
+    "#{@name} team: #{@players.join(", ")}"
+  end
+  def each
+    @players.each { |player| yield player }
+  end
+end
+
+require_relative 'player'
+require_relative 'team'
+
+player1 = Player.new("Bob", 13, 5); player2 = Player.new("Jim", 15, 4.5)
+player3 = Player.new("Mike", 21, 5) ; player4 = Player.new("Joe", 14, 5)
+player5 = Player.new("Scott", 16, 3)
+
+red_team = Team.new("Red")
+red_team.add_players(player1, player2, player3, player4, player5) # (splat)
+
+# select only players between 14 and 20 and reject any player below 4.5 skill-level
+elig_players = red_team.select {|player| (14..20) === player.age }
+                       .reject {|player| player.skill_level < 4.5}
+puts elig_players # => <Jim: 4.5(SL), 15(AGE)>
+                                  # => <Joe: 5(SL), 14(AGE)>
+```
+### Variables Scope
+* Methods and class begin new scope
+* Use **local_variables** to see which variables are in the actual scope
+
+```ruby
+v1 = "outside"
+
+class MyClass
+  def my_method
+        # p v1 EXCEPTION THROWN - no such variable exists
+    v1 = "inside"
+    p v1
+    p local_variables
+  end
+end
+
+p v1 # => outside
+obj = MyClass.new
+obj.my_method # => inside
+              # => [:v1]
+p local_variables # => [:v1, :obj]
+p self # => main
+```
+### Constants Scope
+* Rules are different than variables
+* Inside scope can see outside scope, can override outer constants
+* Outside constant keep the original value.
+
+```ruby
+module Test
+  PI = 3.14
+  class Test2
+    def what_is_pi
+      puts PI
+    end
+  end
+end
+Test::Test2.new.what_is_pi # => 3.14
+
+module MyModule
+  MyConstant = 'Outer Constant'
+  class MyClass
+    puts MyConstant # => Outer Constant
+    MyConstant = 'Inner Constant'
+    puts MyConstant # => Inner Constant
+  end
+  puts MyConstant # => Outer Constant
+end
+```
+### Blocks scope
+* Blocks are different than methods, takes the outer scope.
+
+```ruby
+class BankAccount
+  attr_accessor :id, :amount
+  def initialize(id, amount)
+    @id = id
+    @amount = amount
+  end
+end
+
+acct1 = BankAccount.new(123, 200)
+acct2 = BankAccount.new(321, 100)
+acct3 = BankAccount.new(421, -100)
+accts = [acct1, acct2, acct3]
+
+total_sum = 0
+accts.each do |eachAcct|
+  total_sum += eachAcct.amount
+end
+
+puts total_sum # => 200
+```
+* One variable created inside block is only avialable to the block
+* Params with the same name than outer variable are always local
+* Can explicity declare block local variables after semicolon(;) in the block parameter lists
+
+```ruby
+arr = [5, 4, 1]
+cur_number = 10
+arr.each do |cur_number|
+  some_var = 10 # NOT available outside the block
+  print cur_number.to_s + " " # => 5 4 1
+end
+puts # print a blank line
+puts cur_number # => 10
+
+adjustment = 5
+arr.each do |cur_number;adjustment|
+  adjustment = 10
+  print "#{cur_number + adjustment} " # => 15 14 11
+end
+puts
+puts adjustment # => 5 (Not affected by the block)
+```
