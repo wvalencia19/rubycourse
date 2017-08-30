@@ -13,7 +13,7 @@
 * Open source
 * Modular
 
-### SQLite
+# SQLite
 * User by default SQLite.
 ### Model View Controller (MVC)
 * Model: represents the data of application is working with.
@@ -40,7 +40,7 @@ rails new app_name
 * Gemfile and Gemfile.lock: Files used by the bundler, specify the dependences and the interaction between those dependences.
 * Server **looks** inside public directory before looking anywhere else.
 
-### Controllers
+# Controllers
 
 * Controllers contains **actions**,controllers are basically **classes** and contain which are referred to as actions.
 * Orchestrate web request
@@ -87,3 +87,24 @@ Running via Spring preloader in process 6482
   end
 end
  ```
+# Routes* 
+* The web request needs to get routed to the controller.
+* How did the hello action work?
+* First request -> second router -> controller <-> model <-> DB  controller -> view
+* All routes need be configurated on config/routes.rb 
+
+```ruby
+#get 'greeter/hello' #greeter is controller, hello is action
+
+get 'greeter/hello' => "greeter#hello" 
+get 'greeter/goodbye'
+```
+
+### Rake
+* Rake is Ruby's build language
+* Is similar to ant from java
+* Is Ruby's make
+* No XML, written entirely in ruby
+* Rails uses rake to automate app-related task: Database, runing test, etc
+* rake --tasks ->list the different tasks
+* rake --describe task_name -> describe individual task
