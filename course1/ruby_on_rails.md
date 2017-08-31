@@ -155,4 +155,72 @@ end
 <p><%= link_to "Goodbye", greeter_hello_path %></p>
 ```
 
+ ### HttParty
+
+* https://rubygems.org
+* RubyGems : Is a package manager for Ruby.
+* gem list: Shows de gems intalled
+* gem list httparty : check if a specific gem is already installed
+* gem install httparty : install gem httparty
+* gem list httparty -d : more information about gem
+* Httparty is a restful webservice client
+* Httparty has automatica parsing of json or xml into ruby hashes or arrays
+* Provides support for:
+ 1. Basic http autentication
+ 2. Default request query parameters
+
+### Restful web services
+* Simple web services implemented using HTTP(and principles fo rest):
+ 1. Have a base URI
+ 2. Support data exchange format like XML  and JSON
+ 3. Support a set the http operations(GET, POST, etc)
  
+ ```ruby
+ require 'httparty'
+require 'pp'
+
+class Coursera
+  include HTTParty
+
+  base_uri 'https://api.coursera.org/api/catalog.v1/courses'
+  default_params fields: "smallIcon,shortDescription", q: "search"
+  format :json
+
+  def self.for term
+    get("", query: { query: term})["elements"]
+  end
+end
+
+pp Coursera.for "python"
+ ```
+ 
+### Bundler
+* Provides a consistent enviroment for Ruby projects by tracking and installing the exact gems and versions that are needed.
+* httbundoler.io
+* Preferred way to manage gem dependecies in Rails.
+* Run bundle install or simply bundle after specifying a new gem in the Gemfile 
+* Run bundle update when modifying a version of a gem.
+* If you don't specify version, you will get the last.
+* You can specific version or approximate version
+* You can instruct rails to only load certain gems in specific Rails enviroments.
+* Bundle also loads the gems, It doesn't just download it from the internet.
+
+```ruby
+gem "nokogiri" # last version
+gem "rails", "3.0.0.beta3" #specific
+gem "rack", ">=1.0" #range
+gem "thin", ">=1.1", "<=2.0"
+gem "thin", "~>1.1" #same as above
+
+#Pessimistic version constraint: drop the final digit, then increment to get the upper limit version number.
+
+group :development, :test do
+  gem 'byebug'
+  gem 'web-console', '~> 2.0'
+  gem 'spring'
+end
+```
+* Is possible config how will be named the require
+
+
+
