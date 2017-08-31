@@ -108,3 +108,51 @@ get 'greeter/goodbye'
 * Rails uses rake to automate app-related task: Database, runing test, etc
 * rake --tasks ->list the different tasks
 * rake --describe task_name -> describe individual task
+
+### Action (methods) inside controller
+* If action method is not doing anything(empty), we can remove it
+* Still shows the view
+* The view should have as little ruby code as possible.
+* The logic must be inside controller
+* Every new request will create a new instance variable, alternatives: session or database
+
+Controller
+```ruby
+class GreeterController < ApplicationController
+  def hello
+    random_names = ["Alex", "Joe", "Michael"]
+    @name = random_names.sample
+    @time = Time.now
+    @times_displayed ||= 0
+    @times_displayed += 1
+  end
+end
+```
+### Helpers
+* @time variable is disponible inside controller.
+* What happends if we want format how the time looks?
+ * Should that code go in the view? **Not reusable**
+ * Controller?
+ * Helpers are really view helpers
+ * The helpers are avialable in any view
+ 
+ ```ruby
+ module GreeterHelper
+  def formmated_time(time)
+    time.strftime("%I:%M%p")
+  end
+end
+ ```
+ ### Ruby built-in helpers
+ * link_to -> link_to name path
+ * Path can be a regular string or a route defined in routes.rb, the route will be end with _ulr(full path) or _path(relative)
+ * For the route, take the prefix from routes.rb and combined wiht _url or _path
+ * People prefer _path
+ * The full path (_url) is required in case of redirection
+
+```ruby
+<p><%= link_to "Google", "http://www.google.com" %></p>
+<p><%= link_to "Goodbye", greeter_hello_path %></p>
+```
+
+ 
