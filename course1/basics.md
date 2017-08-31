@@ -9,11 +9,12 @@
 *********************
 ### Name styling
 
-variables =  nombre_variable
-constantes = CONSTANT_VARIABLE
-Clases y módulos = CamelCase
+* variables =  nombre_variable
+* constantes = CONSTANT_VARIABLE
+* Clases y módulos = CamelCase
 
 punto y coma no necesario, sólo si se quiere tener dos sentences en una misma linea
+
  ```ruby a = 1; b =2 ```
 
 irb => es el REPL de ruby
