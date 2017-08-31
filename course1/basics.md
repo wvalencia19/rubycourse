@@ -21,10 +21,10 @@ irb => es el REPL de ruby
 
 *************************************
  ### Flow control
-if/elsif/else
-case
-ultil/unless?
-while/for
+* if/elsif/else
+* case
+* ultil/unless?
+* while/for
 
 while
 
