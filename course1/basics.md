@@ -51,7 +51,7 @@ prints 9
 *********************************************
  ### true/false
 
-false and nil are false, everything else are TRUE ******* 0, 'false', '', 'nil' are true
+false and nil are false, everything else are TRUE ******* -> 0, 'false', '', 'nil' are true
 ***************************************
  ### case
 Two flavors
