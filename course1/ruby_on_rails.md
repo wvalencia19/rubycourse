@@ -93,6 +93,7 @@ end
 * How did the hello action work?
 * First request -> second router -> controller <-> model <-> DB  controller -> view
 * All routes need be configurated on config/routes.rb 
+* root 'courses#index' -> convert that route in the root for the page
 
 ```ruby
 #get 'greeter/hello' #greeter is controller, hello is action
@@ -232,12 +233,13 @@ gem 'sqlite3-ruby' require: 'sqlite3'
 
 # Example
 
+* With params is possible get data from de url
 ### Controller
 
 ```ruby
 class CoursesController < ApplicationController
   def index
-    @search_term = 'jhu'
+    @search_term = params[:looking_for] || 'learn'
     @courses = Coursera.for(@search_term)
   end
 end
@@ -278,4 +280,22 @@ end
       </tr>
   <% end %>
 </table>
+```
+
+* The views are writing inside the body  from the file view/layouts/application.html.erb
+* Inside application.html.erb is possible define which css file use
+* scss is not css, but support all css properties and more, you could css file inside scss
+
+```css
+table {
+  border-collapse: collapse;
+}
+
+td {
+  padding: 12px;
+}
+
+.even {
+  background-color: #D6E1C3;
+}
 ```
