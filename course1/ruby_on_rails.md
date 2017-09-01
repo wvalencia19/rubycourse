@@ -222,5 +222,10 @@ end
 ```
 * Is possible config how will be named the require
 
+```ruby
+gem 'sqlite3-ruby' require: 'sqlite3' 
+```
 
+* Gemfile.lock : Constains the exact version installed for bundle
+* bundle exec : This command executes the command, making all gems specified in the Gemfile(5) available to require in Ruby programs.
 
