@@ -299,3 +299,33 @@ td {
   background-color: #D6E1C3;
 }
 ```
+# Deploying to Heroku
+
+* Heroku os a PasS(Platform as a Service)
+* Download heroku toolbelt -> Command line, allows manage your heroku apllication
+* Heroku use **postgres** and recommend **rails_12factor ** 
+* Put sqlite gem into development group and "heroku" gems in production
+
+```ruby
+gem 'sqlite3', group: :development
+
+group :production do
+  gem 'pg'
+  gem 'rails_12factor'
+end
+```
+
+### Heroku commands
+
+```
+heroku login
+Enter your Heroku credentials:
+Email: wilval7126@gmail.com
+Password: ***************
+Logged in as wilval7126@gmail.com
+
+heroku create search-coursera-learn1
+Creating ⬢ search-coursera-learn1... done
+https://search-coursera-learn1.herokuapp.com/ | https://git.heroku.com/search-coursera-learn1.git
+#Above adds remote on git for heroku
+git push heroku master
