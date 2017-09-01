@@ -46,6 +46,7 @@ rails new app_name
 * Orchestrate web request
 * rails generate controller_name [action1 action2]
 * May substitue generate for g
+* By convention, controllers are named plural and model is named singular
 * Example: rails g controller greeter hello
 
 ```
@@ -176,7 +177,7 @@ end
  3. Support a set the http operations(GET, POST, etc)
  
  ```ruby
- require 'httparty'
+require 'httparty'
 require 'pp'
 
 class Coursera
@@ -229,3 +230,52 @@ gem 'sqlite3-ruby' require: 'sqlite3'
 * Gemfile.lock : Constains the exact version installed for bundle
 * bundle exec : This command executes the command, making all gems specified in the Gemfile(5) available to require in Ruby programs.
 
+# Example
+
+### Controller
+
+```ruby
+class CoursesController < ApplicationController
+  def index
+    @search_term = 'jhu'
+    @courses = Coursera.for(@search_term)
+  end
+end
+```
+
+### Model
+
+```ruby
+class Coursera
+  include HTTParty
+
+  base_uri 'https://api.coursera.org/api/courses.v1?'
+  default_params fields: "smallIcon,shortDescription", q: "search"
+  format :json
+
+  def self.for term
+    get("", query: { query: term})["elements"]
+  end
+end
+```
+
+### View
+
+```ruby
+<h1>Searching for - <%= @search_term %></h1>
+
+<table border="1">
+  <tr>
+    <th>Image</th>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  <% @courses.each do |course| %>
+      <tr class=<%= cycle('even', 'odd') %>>
+        <td><%= image_tag(course["smallIcon"])%></td>
+        <td><%= course["name"] %></td>
+        <td><%= course["shortDescription"] %></td>
+      </tr>
+  <% end %>
+</table>
+```
