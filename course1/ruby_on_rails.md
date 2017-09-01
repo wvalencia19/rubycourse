@@ -330,4 +330,50 @@ https://search-coursera-learn1.herokuapp.com/ | https://git.heroku.com/search-co
 #Above adds remote on git for heroku
 git push heroku master
 ```
-Email: wilval7126@gmail.com
+
+# Black Box testing
+* The idea is don't care by the language of the application
+* https://github.com/jhu-ep-coursera/fullstack-course1-module3-blackbox-testing
+* Enter RSpec + Capybara ruby gems. When these 2 frameworks come together, you can write very intuitive and expressive tests.
+
+```
+rspec --format documentation
+```
+### phantomJS
+* Is a headless browser
+* Capybara has a gem called poltergeist, this is a phantomJS driver for Capybara
+
+```ruby
+Capybara.default_driver = :selenium -> for test with firefox
+# Capybara.default_driver = :poltergeist -> for test with visual browser
+
+Capybara.app_host = "http://search-coursera-jhu.herokuapp.com/"
+
+describe "Coursera App" do
+
+  describe "visit root" do
+  	before { visit '/' }
+    
+    it "displays 'Johns Hopkins' (default)" do
+      expect(page).to have_content 'Johns Hopkins'
+    end
+
+    it "displays table element that has a row with 3 columns" do
+      expect(page).to have_selector(:xpath, "//table//tr[count(td)=3]")
+    end
+
+    it "column 1 should have the thumbnail inside img tag" do
+      expect(page).to have_selector(:xpath, "//table//tr/td[1]//img")
+    end
+  end
+
+  it "displays 'The Meat We Eat' when looking_for=diet" do
+    visit "?looking_for=diet"
+    expect(page).to have_content 'The Meat We Eat'  	
+  end
+
+end
+```
+### Debugging rails applications
+* heroku logs -> see logs from heroku
+
