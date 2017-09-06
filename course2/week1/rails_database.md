@@ -16,3 +16,11 @@ rails g scaffold car make color year:integer #car is entitie, others are the col
 ```
 rake db:migrate #create the code on DB
 ```
+# Database Setup and SQLite
+
+* By default rails use SQLite
+* SQLite doesn't have a server, is just a file
+
+```
+rails db
+```
