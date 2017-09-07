@@ -74,4 +74,7 @@ end
   
   ### Creating and Modifying Tables and Columns
   
-  
+  * By convention tables are named in plural
+  * The entitie is creted in singular
+  * Id column is created automatically to be used as primary key
+  * automatically are created created_at and updated_at
