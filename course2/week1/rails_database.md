@@ -78,3 +78,42 @@ end
   * The entitie is creted in singular
   * Id column is created automatically to be used as primary key
   * automatically are created created_at and updated_at
+
+```ruby
+.schema cars #to see the sql create table
+rake db:rollback #rollback the previous migration
+
+## add column
+  add_column :table_name,
+  :column_name, :column_type
+  
+## remove column
+  remove_column :table_name, :column_name
+```
+
+```ruby
+  rails g migration add_price_to_cars 'price:decimal{10,2}'
+# generates this code:
+  class AddPriceToCars < ActiveRecord::Migration
+  def change
+    add_column :cars, :price, :decimal, precision: 10, scale: 2
+  end
+end
+```
+
+* ***For begin with application with many migrations is better load the schema file (snapshot from last db state) instead run all migrations.***
+
+```
+rake db:schema:load
+```
+
+* ***rename columns:*** rename_column :table_name , :old_column_name, :new_column_name
+```ruby
+  rails g migration rename_make_to_company
+  # is necesary add code by hand
+  class RenameMakeToCompany < ActiveRecord::Migration
+  def change
+    rename_column :cars , :make, :company
+  end
+end
+```
