@@ -112,6 +112,10 @@ the_count = [1, 2, 3, 4, 5]
 for number in the_count
   puts "This is count #{number}"
 end
+
+for i in 0..5
+   puts "Value of local variable is #{i}"
+end
 ```
 # Ranges
 
