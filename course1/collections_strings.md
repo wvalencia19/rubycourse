@@ -102,6 +102,17 @@ p new_arr # => [1, 3, 7]
 new_arr = a.map { |x| x * 3 }
 p new_arr # => [3, 9, 12, 21, 24, 30]
 ```
+
+* for
+```ruby
+the_count = [1, 2, 3, 4, 5]
+
+# this first kind of for-loop goes through a list
+# in a more traditional style found in other languages
+for number in the_count
+  puts "This is count #{number}"
+end
+```
 # Ranges
 
 Express natural consecutive secuences
