@@ -117,3 +117,105 @@ rake db:schema:load
   end
 end
 ```
+
+### Metaprogramming
+
+* In dynamic language like ruby, methods don't have to be predefined - they need to only by found when invoked.
+* There is another way to call methods in ruby, object.send(method/symbol, parameters..)
+
+```ruby
+class Dog
+    def bark  
+      puts "Woof, woof!"
+    end
+    def greet(greeting)
+      puts greeting
+    end
+end
+  
+dog = Dog.new
+dog.bark # Woof, woof!
+dog.send("bark") # Woof, woof!
+dog.send(:bark) # Woof, woof!
+dog.send :bark # Woof, woof!
+dog.send(:greet, "hola") #hola
+  
+```
+
+```
+rb(main):001:0> props = {name: "John", age:15 }
+=> {:name=>"John", :age=>15}
+irb(main):002:0> class Person; attr_accesor :name, :age; end
+NoMethodError: undefined method `attr_accesor' for Person:Class
+	from (irb):2:in `<class:Person>'
+	from (irb):2
+	from /usr/bin/irb:12:in `<main>'
+irb(main):003:0> class Person; attr_accessor :name, :age; end
+=> nil
+irb(main):004:0> person = Person.new
+=> #<Person:0x007f89ce80d7c0>
+irb(main):005:0> props.each {|key,value| person.send("#{key}=", value)}
+=> {:name=>"John", :age=>15}
+irb(main):006:0> person
+=> #<Person:0x007f89ce80d7c0 @name="John", @age=15>
+```
+
+### Advantages
+
+* Can decide in runtime which methods to call
+
+```ruby
+###store class
+class Store
+def get_piano_desc
+    "Excellent piano"
+end
+def get_piano_price
+120.00
+end
+def get_violin_desc
+    "Fantastic violin"
+end
+def get_violin_price
+110.00
+end
+  # ...many other similar methods...
+end
+
+### class reporting system
+require_relative 'store'
+
+class ReportingSystem
+        def initialize
+                @store = Store.new
+        end
+
+def get_piano_desc
+        @store.get_piano_desc
+end
+
+def get_piano_price
+        @store.get_piano_price
+end
+
+  # ...many more similar methods...
+end
+
+rs = ReportingSystem.new
+puts "#{rs.get_piano_desc} costs #{rs.get_piano_price.to_s.ljust(6, '0')}" # => Excellent piano costs 120.00
+
+## class reporting system with dynamic methods
+
+require_relative 'store'
+class ReportingSystem
+        def initialize
+                @store = Store.new
+                @store.methods.grep(/^get_(.*)_desc/) { ReportingSystem.define_report_methods_for $1 }
+        end
+        def self.define_report_methods_for (item)
+                define_method("get_#{item}_desc") { @store.send("get_#{item}_desc")}
+                define_method("get_#{item}_price") { @store.send("get_#{item}_price")}
+end end
+rs = ReportingSystem.new
+puts "#{rs.get_piano_desc} costs #{rs.get_piano_price.to_s.ljust(6, '0')}" # => Excellent piano costs 120.00
+```
