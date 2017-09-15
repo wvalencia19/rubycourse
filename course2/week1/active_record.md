@@ -140,3 +140,43 @@ irb(main):069:0> Person.offset(1).limit(1).all.map {|person| "#{person.first_nam
   Person Load (0.2ms)  SELECT  "people".* FROM "people" LIMIT 1 OFFSET 1
 => ["John Doe"]
 ```
+
+### Update
+
+* Two ways to update a record in the database:
+1.  Retrieve a record, modify the values and then call save
+2.  Retrieve a record and then call update method passing in a hash of attributes with new values
+
+* There is alsou pdate_all for batch updates •  You can chain this to the end of where
+
+```
+jane = Person.find_by first_name: "Jane"
+  Person Load (0.3ms)  SELECT  "people".* FROM "people" WHERE "people"."first_name" = ? LIMIT 1  [["first_name", "Jane"]]
+=> #<Person id: 3, first_name: "Jane", last_name: "Doe", created_at: "2017-09-14 04:15:22", updated_at: "2017-09-14 04:15:22">
+irb(main):002:0> jane.last_name = "valencia"
+=> "valencia"
+irb(main):003:0> jane.save
+   (0.2ms)  begin transaction
+  SQL (1.0ms)  UPDATE "people" SET "last_name" = ?, "updated_at" = ? WHERE "people"."id" = ?  [["last_name", "valencia"], ["updated_at", "2017-09-15 05:03:35.989111"], ["id", 3]]
+   (1.2ms)  commit transaction
+=> true
+irb(main):004:0> jane = Person.find(3)
+  Person Load (0.3ms)  SELECT  "people".* FROM "people" WHERE "people"."id" = ? LIMIT 1  [["id", 3]]
+=> #<Person id: 3, first_name: "Jane", last_name: "valencia", created_at: "2017-09-14 04:15:22", updated_at: "2017-09-15 05:03:35">
+
+Person.find_by_last_name("Smith").update(last_name: "Smithson")
+  Person Load (0.3ms)  SELECT  "people".* FROM "people" WHERE "people"."last_name" = ? LIMIT 1  [["last_name", "Smith"]]
+   (0.1ms)  begin transaction
+  SQL (0.3ms)  UPDATE "people" SET "last_name" = ?, "updated_at" = ? WHERE "people"."id" = ?  [["last_name", "Smithson"], ["updated_at", "2017-09-15 05:05:18.062734"], ["id", 1]]
+   (2.2ms)  commit transaction
+```
+
+### Delete
+
+```
+   destroy(id) or destroy
+•  Removes a particular instance from the DB
+•  Instantiates an object first and performs callbacks before removing
+•  Seehttp://guides.rubyonrails.org/active_record_callbacks.html    delete(id)
+•  Removes the row from DB    There is also a delete_all
+```
