@@ -50,6 +50,10 @@ class CreateCars < ActiveRecord::Migration
 end
 ```
 
+### Generate model
+```
+rails g model user email age:integer
+```
 ### Create migrations
 * Is possible create migrations by hand
 * Scaffold creates a migrations (unless passed --no-migration flag)
