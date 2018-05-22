@@ -81,6 +81,10 @@ irb(main):014:0> Person.pluck(:first_name) #returns array with column first_name
 => ["Joe", "John", "Jane"]
 ```
 
+### Pluck 
+
+pluck can be used to query multiple or several of the underlying table of a model. Accepts a list of column names as an argument and returns an array of values for the specified columns with the corresponding data type.
+
 * ***Where***
 
 ```
