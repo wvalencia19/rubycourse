@@ -199,3 +199,154 @@ class Person < ActiveRecord::Base
     has_many :my_jobs, class_name: "Job"
 end
 ```
+
+## Many-to-Many Association
+
+* One person can have many hobbies
+* One hobby can be shared by many people ✧  habtm (has_and_belongs_to_many)
+* Need to create an extra (a.k.a. join) table (without a model, i.e. just a migration)
+
+```
+ Convention: Plural model names separated by an underscore in alphabetical order
+ rails g model hobby name
+ rails g migration create_hobbies_people person:references hobby:references
+```
+
+```ruby
+class Person < ActiveRecord::Base
+    has_one :personal_info, dependent: :destroy
+    has_many :jobs
+    has_many :my_jobs, class_name: "Job"
+    has_and_belongs_to_many :hobbies
+ end
+ 
+ class Hobby < ActiveRecord::Base
+    has_and_belongs_to_many :people
+end
+
+```
+
+```
+ josh = Person.find_by first_name: "Josh"
+ lebron = Person.find_by first_name: "LeBron"
+ programming = Hobby.create name:"Programming"
+ josh.hobbies << programming
+ lebron << programming
+```
+
+* Many-to-Many contains 2 models and 3 migrations
+* Join table needs to only exist in the DB, but not in Ruby code
+
+## Rich Many-to-Many association
+
+* Sometimes, you need to keep some data on the join table or
+* You need to store grandchild relationships on a model, like user ➔ articles ➔ comments
+* In our case – all salary ranges for a particular person
+* ActiveRecordprovidesa:throughoptionforthis purpose
+* Basic idea: you first create a regular parent-child relationship and then use the child model as a “join” between the parent and grandchild
+
+```
+rails g model salary_range min_salary:float max_salary:float job:references
+```
+
+```ruby
+class Job < ActiveRecord::Base
+  belongs_to :person
+  has_one :salary_range
+end
+
+class SalaryRange < ActiveRecord::Base
+  belongs_to :job
+end
+
+class Person < ActiveRecord::Base
+    has_one :personal_info, dependent: :destroy
+    has_many :jobs
+    has_many :my_jobs, class_name: "Job"
+    has_and_belongs_to_many :hobbies
+
+    has_many :approx_salaries, through: :jobs, source: :salary_range
+end
+```
+
+```
+lebron = Person.find_by(fist_name: "LeBron")
+lebron.jobs.count
+Job.find(12).create_salary_range(min_salary: 10000, max_salary:20000)
+Job.find(13).create_salary_range(min_salary: 10000, max_salary:20000)
+lebron.approx_salaries
+
+```
+## ActiveRecord Calculations
+
+```ruby
+class Person < ActiveRecord::Base
+    has_one :personal_info, dependent: :destroy
+    has_many :jobs
+    has_many :my_jobs, class_name: "Job"
+    has_and_belongs_to_many :hobbies
+
+    has_many :approx_salaries, through: :jobs, source: :salary_range
+
+    def max_salary
+        approx_salaries.maximum(:max_salary)
+    end
+end
+```
+* Average, minimum and sum also available... (http://api.rubyonrails.org/classes/ActiveRecord/Calculations.html)
+lebron = Person.find_by last_name: "James"
+lebron.max_salary
+
+## default_scope
+
+* Class “method” for specifying how the records are retrieved by default from the database (instead of relying on the database default)
+
+```
+irb(main):001:0> Hobby.pluck :name
+   (0.5ms)  SELECT "hobbies"."name" FROM "hobbies"  ORDER BY "hobbies"."name" ASC
+```
+
+```ruby
+class Hobby < ActiveRecord::Base
+    has_and_belongs_to_many :people
+    default_scope {order :name}
+end
+```
+
+* Use unscoped to break out of the default
+
+```irb(main):004:0> Hobby.unscoped.pluck :name
+   (0.2ms)  SELECT "hobbies"."name" FROM "hobbies"
+```
+
+***scope :name, lambda***
+
+```
+class Person < ActiveRecord::Base
+    has_one :personal_info, dependent: :destroy
+    has_many :jobs
+    has_many :my_jobs, class_name: "Job"
+    has_and_belongs_to_many :hobbies
+
+    has_many :approx_salaries, through: :jobs, source: :salary_range
+
+    def max_salary
+        approx_salaries.maximum(:max_salary)
+    end
+
+    scope :ordered_by_age, -> {order age: :desc}
+    scope :starts_with, -> (starting_string){where("first_name LIKE ?", "#{starting_string}")}
+end
+
+```
+* Chaining
+
+```
+Person.ordered_by_age.pluck :age
+Person.ordered_by_age.starts_with("Jo") :age, :first_name
+
+Person.ordered_by_age.limit(2).starts_with("Jo") :age, :first_name
+```
+
+* Scopes always return ActiveRecord::Relation
+* Can make your ActiveRecord queries very expressive
