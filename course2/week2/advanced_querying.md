@@ -435,7 +435,9 @@ ActiveRecord::Base.transaction do
 ### Diferent active record classes in a single transaction
 
 ```ruby
-balance.save!
-account.save!
-```
+Account.transaction do
+ balance.save!
+ account.save!
 end
+```
+
