@@ -350,3 +350,92 @@ Person.ordered_by_age.limit(2).starts_with("Jo") :age, :first_name
 
 * Scopes always return ActiveRecord::Relation
 * Can make your ActiveRecord queries very expressive
+
+## Active Record validations
+
+* Preferably, you would like to have some control over what goes into the database
+* Not every input might be appropriate
+* If these validations fail – your information should not be saved to the database
+* Active Record provides a lot of built-in validators
+
+### :presence and :uniqueness
+* presence: true
+ Make sure the field contains some data
+* uniqueness: true
+ A check is performed to make sure no record exists in the database (already) with the given value for the specified attribute
+ 
+ ```ruby
+ 
+class Job < ActiveRecord::Base
+  belongs_to :person
+  has_one :salary_range
+
+  validates :title, :company, presence: true
+end
+``` 
+
+```
+irb(main):008:0> job = Job.new
+=> #<Job id: nil, title: nil, company: nil, position_id: nil, person_id: nil, created_at: nil, updated_at: nil>
+irb(main):009:0> job.errors
+=> #<ActiveModel::Errors:0x007f815683d298 @base=#<Job id: nil, title: nil, company: nil, position_id: nil, person_id: nil, created_at: nil, updated_at: nil>, @messages={}>
+irb(main):010:0> job.save
+   (0.1ms)  begin transaction
+   (0.1ms)  rollback transaction
+=> false
+irb(main):011:0> job.errors
+=> #<ActiveModel::Errors:0x007f815683d298 @base=#<Job id: nil, title: nil, company: nil, position_id: nil, person_id: nil, created_at: nil, updated_at: nil>, @messages={:title=>["can't be blank"], :company=>["can't be blank"]}>
+```
+### Other Common Validators
+
+* :numericality – validates numeric input
+* :length – validates value is a certain length
+* :format – validates value complies with some regular expression format
+* :inclusion – validates value is inside specified range
+* :exclusion – validates value is out of the specified range
+
+### Writing Your Own Validator
+
+1.  Write a method that does some validation and calls errors.add(columnname, error)when it encounters an error condition
+1. Specify it as a symbol for the validate method
+
+```ruby
+class SalaryRange < ActiveRecord::Base
+  belongs_to :job
+
+  validate :min_is_less_than_max
+
+  def min_is_less_than_max
+    if min_salary > max_salary
+      errors.add(:min_salary, "Cannot be greater than maximun salary!")
+    end
+  end
+
+end
+```
+
+* Validations give you control over what goes into DB
+* See the guides for more information on Active Record
+•  http://guides.rubyonrails.org/active_record_basics.html
+•  http://guides.rubyonrails.orgactive_record_querying.html •  http://guides.rubyonrails.org/association_basics.html
+•  http://guides.rubyonrails.org/active_record_callbacks.html
+
+### N+1 Query issue
+```
+Person.all.each {|p| puts p.personal_info.weight} -> do a select query for each person
+Person.includes(:personal_info).all.each {|p| puts p.personal_info.weight} -> do a select query for each person
+```
+
+## Transactions 
+```ruby
+ActiveRecord::Base.transaction do
+ david.withdrawl(100)
+ mary.deposit(100)
+```
+### Diferent active record classes in a single transaction
+
+```ruby
+balance.save!
+account.save!
+```
+end
