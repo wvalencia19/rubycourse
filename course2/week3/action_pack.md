@@ -87,5 +87,29 @@ REST: A Simple Rails Convention:
 
 ```
 
+| HTTP Method        | Named Routes           | Parameters  | Controller Action| Purpose|
+| ------------- |---------------| ------| ---------------- | -------|
+| GET     | posts_path | | index | List all |
+| GET     | post_path      |   ID | show | Show one|
+| GET | new_post_path      |     | new | Provide form to input new post |
+| POST     | posts_path | Record hash| create | Create new record (in DB) |
+| GET     | edit_post_path      |   ID | edit |Provide form to edit post|
+| PUT/PATCH | post_path      |   ID and Record hash  | update | Update record (in DB) |
+| DELETE | post_path      |   ID  | destroy | Remove record |
 
+
+* If you forget the chart on the previous page, you can always just run $rake routes
+
+```
+course2/week3/my_blog  rake routes
+   Prefix Verb   URI Pattern               Controller#Action
+    posts GET    /posts(.:format)          posts#index
+          POST   /posts(.:format)          posts#create
+ new_post GET    /posts/new(.:format)      posts#new
+edit_post GET    /posts/:id/edit(.:format) posts#edit
+     post GET    /posts/:id(.:format)      posts#show
+          PATCH  /posts/:id(.:format)      posts#update
+          PUT    /posts/:id(.:format)      posts#update
+          DELETE /posts/:id(.:format)      posts#destroy
+```
 
