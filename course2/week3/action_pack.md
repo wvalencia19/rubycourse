@@ -44,7 +44,7 @@ Is that it?! One line lets you route to actions that list, create, edit and dest
 
 ## REST and Rails
 
-***Re***presentational ***S***tate ***T***ransfer
+Representational State Transfer
 
 * Check out the following great resource on REST:
 http://www.xfront.com/REST-Web-Services.html
