@@ -50,7 +50,8 @@ Representational State Transfer
 http://www.xfront.com/REST-Web-Services.html
 
 REST = Resources
-* REST is all about resources ²  You should be to able to:
+* REST is all about resources 
+* You should be to able to:
 1. List available resources
 1. Show a specific resource
 1. Destroy an existing resource
