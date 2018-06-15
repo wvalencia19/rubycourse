@@ -96,3 +96,40 @@ class PostsController < ApplicationController
 * Even though redirect involves an extra step (roundtrip to the browser) – sometimes it just makes sense
 * Obvious examples:
   1. When you want the client to be able to bookmark a certain page or you don’t have a specific template to show (destroy action) and instead want the client to go to a generic page (index)
+
+
+# new RESTful action
+
+1.  Create a new empty post object
+1.  (Implicit) Look for new.html.erb
+
+```ruby
+class PostsController < ApplicationController
+
+ # GET /posts/new
+  def new
+    @post = Post.new
+  end
+
+```
+
+```html
+<h1>New Post</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Back', posts_path %>
+  
+ ```
+ 
+# create RESTful action
+
+1.  Create a new post object with parameters that were passed from the new form
+1.  Try to save the object to the database
+1.  If successful, redirect to show template
+1.  If unsuccessful, render new action (template - again)
+  * Why would it not be successful? Validations did not pass for example.
+ 
+## Summary
+* new action provides a form to be filled out to create a new resource
+* create action accepts parameters passed in from filling out the form in the new action
