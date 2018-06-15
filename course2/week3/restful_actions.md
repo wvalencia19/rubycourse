@@ -133,3 +133,181 @@ class PostsController < ApplicationController
 ## Summary
 * new action provides a form to be filled out to create a new resource
 * create action accepts parameters passed in from filling out the form in the new action
+
+
+# Strong parameters
+
+With [strong parameters](http://guides.rubyonrails.org/action_controller_overview.html#strong-parameters), Action Controller parameters are forbidden to be used in Active Model mass assignments until they have been whitelisted. This means that you'll have to make a conscious decision about which attributes to allow for mass update. This is a better security practice to help prevent accidentally allowing users to update sensitive model attributes.
+
+
+```ruby
+
+class PostsController < ApplicationController
+  # POST /posts
+  # POST /posts.json
+  def create
+    @post = Post.new(post_params)
+
+    respond_to do |format|
+      if @post.save
+        format.html { redirect_to @post, notice: 'Post was successfully created.' }
+        format.json { render :show, status: :created, location: @post }
+      else
+        format.html { render :new }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  private
+  
+  # Never trust parameters from the scary internet, only allow the white list through.
+    def post_params
+      params.require(:post).permit(:title, :content)
+    end
+ end
+ ```
+ 
+ # Flash
+ 
+* Problem: We want to redirect a user to a different page on our site, but at the same time give him some sort of a message? For example, “Post created!”
+* Solution: flash – a hash where the data you put in persists for exactly ONE request AFTER the current request.
+* You can put your content into flash by doing flash[:attribute] = value
+* Two very common attributes are :notice (good) and :alert (bad)
+* These are so common in fact, that the redirect_to takes a :notice or :alert keys
+
+
+# Edit RESTful action
+
+1.  Retrieve a post object based on the id provided (as part of the URl)
+1.  (Implicit) Look for edit.html.erb
+
+```ruby
+class PostsController < ApplicationController
+  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  
+  # GET /posts/1/edit
+    def edit
+    end
+  
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_post
+      @post = Post.find(params[:id])
+    end
+end
+
+```
+```html
+<h1>Editing Post</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', @post %> |
+<%= link_to 'Back', posts_path %>
+  
+```
+
+# Update RESTful Action
+
+1.  Retrieve an existing post using id parameter
+1.  Update post object with (strong) parameters that were
+passed from the edit form
+1.  Try to (re)save the object to the database
+1.  If successful, redirect to show template
+1.  If unsuccessful, render edit action (template) again
+
+
+```ruby
+class PostsController < ApplicationController
+  before_action :set_post, only: [:show, :edit, :update, :destroy]
+  
+  # PATCH/PUT /posts/1
+  # PATCH/PUT /posts/1.json
+  def update
+    respond_to do |format|
+      if @post.update(post_params)
+        format.html { redirect_to @post, notice: 'Post was successfully updated.' }
+        format.json { render :show, status: :ok, location: @post }
+      else
+        format.html { render :edit }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_post
+      @post = Post.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def post_params
+      params.require(:post).permit(:title, :content)
+    end
+end
+```
+
+## Summary
+1. edit/update is very similar to new/create except there is an id of an existing resource that is being kept track of
+1. Strong parameters apply to updating a resource as well as creating one
+
+
+# Partials
+
+Partials: DRY (Don’t Repeat Yourself)
+* Rails encourages the DRY principle
+* We already know about the application.html.erb, which enables you to maintain layout code for the entire application in one place (more on this later)
+* It would also be nice to reuse snippets of view code in multiple templates
+* For example, edit and new forms – are they really that much different?
+* Partials are similar to regular templates, but they have a more refined set of capabilities
+* Named with underscore (_) as the leading character
+* Rendered with render ‘partialname’ (no underscore)
+* render also accepts a second argument, a hash of local variables used in the partial
+
+## Object Partial
+* Similar to passing local variables, you can also render a specific object
+* <%= render @post %> will render a partial in app/ views/posts/_post.html.erb and automatically assign a local variable post
+
+```ruby
+<%= render @posts %>
+is equivalent to
+<% @posts.each do |post| %>
+  <%= render post %>
+<% end %>
+```
+```html
+<%= form_for(@post) do |f| %>
+  <% if @post.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+
+      <ul>
+      <% @post.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title, "Heading" %><br>
+    <%= f.text_field :title, placeholder: "Have a great title?" %>
+  </div>
+  <div class="field">
+    <%= f.label :content %><br>
+    <%= f.text_area :content, size: "10x3" %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+```
+
+```ruby
+class Post < ActiveRecord::Base
+	validates :title, presence: true
+end
+
+```
