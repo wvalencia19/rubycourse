@@ -132,3 +132,100 @@ new_session GET    /sessions/new(.:format)             sessions#new
 * Sessions and cookies make the interaction between browser and server stateful
 * You can think of Sessions as yet another resource
 * Custom routes - http://guides.rubyonrails.org/routing.html
+
+# Sessions controller and view
+
+## views/sessions/new.html.erb
+
+```html
+  <h1>Login</h1>
+
+<%= form_for(:reviewer, url: sessions_path) do |f| %>
+    <div class="field"><%= f.label :name %> <br/> <%= f.text_field :name %></div>
+
+    </p>
+
+    <div class="field"><%= f.label :password %> <br/> <%= f.password_field :password %></div>
+
+    <div class"actions"><%= f.submit "Login"%> </div>
+
+<%end%>
+  
+```
+## Sessions Controller
+
+```ruby
+class SessionsController < ApplicationController
+  skip_before_action :ensure_login, only: [:new, :create]
+  def new
+    #Login Page - new.html.erb
+  end
+
+  def create
+    reviewer = Reviewer.find_by(name: params[:reviewer][:name])
+    password = params[:reviewer][:password]
+    if reviewer && reviewer.authenticate(password)
+      session[:reviewer_id] = reviewer.id
+      redirect_to root_path, notice: "Logged in successfully"
+    else
+      redirect_to login_path, alert: "Invalid username/password combination"
+    end
+  end
+
+  def destroy
+    reset_session 
+    redirect_to login_path, notice: "Yoy have been logged out"
+  end
+end
+```
+
+## Locking Down The App
+* We can have a before_action in the ApplicationController (from which all the other controllers inherit) that will make you login if you are not yet logged in
+* But if everything is blocked off – how will we get to the login page? Hmm...
+* Controllers can override before_action with skip_before_action
+
+## application_controller.rb
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :exception
+
+  before_action :ensure_login
+
+  protected
+  def ensure_login
+    redirect_to login_path unless session[:reviewer_id]
+  end
+end
+```
+## sessions_controller.rb
+
+```ruby
+class SessionsController < ApplicationController
+  skip_before_action :ensure_login, only: [:new, :create]
+  def new
+    #Login Page - new.html.erb
+  end
+
+  def create
+    reviewer = Reviewer.find_by(name: params[:reviewer][:name])
+    password = params[:reviewer][:password]
+    if reviewer && reviewer.authenticate(password)
+      session[:reviewer_id] = reviewer.id
+      redirect_to root_path, notice: "Logged in successfully"
+    else
+      redirect_to login_path, alert: "Invalid username/password combination"
+    end
+  end
+
+  def destroy
+    reset_session 
+    redirect_to login_path, notice: "Yoy have been logged out"
+  end
+end
+```
+## Summary
+* Login page corresponds to new action SessionsController, but uses attributes from Reviewer
+* Lock down the app by specifying a before_action in ApplicationController
