@@ -125,3 +125,50 @@ class NotesController < ApplicationController
 end
 ```
 * create and destroy actions is all we need
+
+## Embed nested resources into the parent view
+
+* content_tag: Nice Rails helper to generate HTML content
+
+ * simple_format: formats new lines as <br/>
+ 
+ ```html
+<div class="book">
+ <%= content_tag :span, "#{@book.name} (#{@book.author})", class: "book-tittle" %>
+ <%= link_to 'Edit', edit_book_path(@book) %>
+</div>
+
+<div id="notes">
+  <%= 
+  render @book.notes 
+  #note partials
+  %>
+</div>
+
+<div>
+  <%= 
+  #form for new note
+  # nested resource [@book, @book.notes.new]
+  form_for([@book, @book.notes.new]) do |f| 
+  %>
+    <div class="field">
+      <%= f.label :tittle %>
+      <%= f.text_field :tittle %>
+    </div>
+    <div class="field">
+      <%= f.label :note %>
+      <%= f.text_area :note, size: "25x5" %>
+    </div>
+
+    <div class="action">
+      <%= f.submit "Add New Note" %>
+    </div>
+  <% end %>
+</div>
+<%= link_to 'Back', books_path%>
+```
+ 
+* Remember to always pass the parent and the child into the form_for and link_to helpers
+* Usecontent_tag,simple_formatandvarious date-related helpers to simplify development
+
+
