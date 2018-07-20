@@ -229,3 +229,87 @@ end
 ## Summary
 * Login page corresponds to new action SessionsController, but uses attributes from Reviewer
 * Lock down the app by specifying a before_action in ApplicationController
+
+## Security Helpers
+
+* Let’saddlogged_in?andcurrent_userhelpersto ApplicationController and make them available as helper methods to all controllers and views via helper_method
+* Then, we can add logic to application.html.erb for logging out and information about the user who is logged in
+
+## application_controller.rb
+
+```ruby
+class ApplicationController < ActionController::Base
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :exception
+
+  before_action :ensure_login
+  helper_method :logged_in?, :current_user
+
+  protected
+  def ensure_login
+    redirect_to login_path unless session[:reviewer_id]
+  end
+
+  def logged_in?
+    session[:reviewer_id]
+  end
+
+  def current_user
+    @current_user ||= Reviewer.find(session[:reviewer_id])
+  end
+end
+```
+
+## views/layouts/application.html.erb
+
+```hmtl
+<% if logged_in? %>
+  <div style='float: right;'>
+    Logged in as <%= current_user.name%> |
+    <%= link_to "Logout", logout_path, method: :delete%>
+  </div>
+<% end %>
+```
+
+# Authorization
+
+* We have implemented basic Authentication, but this still does nothing for our Authorization
+* Anybody who logs into the system can edit anyone else’s books and notes?!
+* SOLUTION: We can go back to the BooksController and scope things down based on the current_user (instance of Reviewer)
+
+## Authorization – index, new, create
+
+```ruby
+def index
+    @books = current_user.books.all
+end
+
+def new
+    @book = current_user.books.new
+end
+  
+def create
+    @book = current_user.books.new(book_params)
+
+    respond_to do |format|
+      if @book.save
+        format.html { redirect_to @book, notice: 'Book was successfully created.' }
+        format.json { render :show, status: :created, location: @book }
+      else
+        format.html { render :new }
+        format.json { render json: @book.errors, status: :unprocessable_entity }
+      end
+    end
+ end
+ 
+ private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_book
+      @book = current_user.books.find(params[:id])
+    end
+```
+
+## Summary
+* Can use the info stored in the session to store current user id
+* Then, can look up resources associated with the current user
