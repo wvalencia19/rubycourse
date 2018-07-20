@@ -313,3 +313,32 @@ def create
 ## Summary
 * Can use the info stored in the session to store current user id
 * Then, can look up resources associated with the current user
+
+# Pagination
+
+1.  Shut down your server
+1.  Include will_paginate gem
+1.  Run $bundle
+1.  One line of code in the controller
+1.  One line of code in your view
+1.  Restart your server
+
+## Gemfile
+
+``` 
+gem 'will_paginate', '~> 3.0.6'
+```
+## BooksController
+```
+ def index
+    @books = current_user.books.paginate(page: params[:page], per_page: 10)
+  end
+```
+## books/index.html.erb
+```html
+<%= will_paginate @books%>
+```
+
+## Summary
+* will_paginate gem makes it easy to paginate your results
+* Scope your Active Record call from controller and pass in a “which page?” parameter from your view after installing will_paginate is all you need
