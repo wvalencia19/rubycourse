@@ -143,6 +143,5 @@ up in cost
 * Test the data with a simple find command (note: we will cover this in more depth later)
 ```
 db.zips.findOne()
-``
+```
   1. The above command will return a single document from the zips collection.
-## MongoDB Basics
