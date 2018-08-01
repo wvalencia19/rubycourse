@@ -132,7 +132,7 @@ db[:zips].find(:city => {:$regex => 'X'}).limit(5).each
 ### $exists
 * Will check to see of the document exists when the boolean is true
 ```ruby
-db[:zips].find(:city => {:$exists => true}).projection({:_id => false}).limit(3).to_a.each {|r| pp r}
+  db[:zips].find(:city => {:$exists => true}).projection({:_id => false}).limit(3).to_a.each {|r| pp r}
 ```
 
 ### $not
@@ -140,7 +140,7 @@ db[:zips].find(:city => {:$exists => true}).projection({:_id => false}).limit(3)
 * Selects the documents that do not match the <operator-expression>
   
 ```ruby
-db[:zips].find(:pop =>{'$not' => {'$gt' => 9500}}).projection ({_id:false}).limit(20).to_a.each{|r| pp r}
+  db[:zips].find(:pop =>{'$not' => {'$gt' => 9500}}).projection ({_id:false}).limit(20).to_a.each{|r| pp r}
 ```
   
 ### $type
@@ -148,15 +148,50 @@ db[:zips].find(:pop =>{'$not' => {'$gt' => 9500}}).projection ({_id:false}).limi
 * Handy when dealing with unstructured data where data types are not predictable
 
 ```ruby
-db[:zips].find({:state=> {:$type => 2}}).first
+  db[:zips].find({:state=> {:$type => 2}}).first
 ```
 ## Replace
 ### replace_one
 * replace_one – Replace a document in the collection according to the specified parameters
 ```ruby
-db[:zips].insert_one(:_id => "100", :city => "citytemp", :loc => [ -76.05922700000001, 39.564894 ], :pop => 4678, :state => "MD" )
-db[:zips].find(:_id => "100").replace_one(:_id => "100", :city => "city02", :loc => [ -78.22, 36.22 ], :pop => 2000, :state => "MD" )
-db[:zips].find(:_id => "100").to_a
+  db[:zips].insert_one(:_id => "100", :city => "citytemp", :loc => [ -76.05922700000001, 39.564894 ], :pop => 4678, :state => "MD" )
+  db[:zips].find(:_id => "100").replace_one(:_id => "100", :city => "city02", :loc => [ -78.22, 36.22 ], :pop => 2000, :state => "MD" )
+  db[:zips].find(:_id => "100").to_a
 ```
 
+### update_one
+
+* update_one – Update a single document in the collection according to the specified arguments
+```ruby
+  db[:zips].find(:_id => "100").update_one (:$set => {:city => "name2"})
+  db[:zips].find(:_id => "100").to_a
+```
+### update_many
+* update_many – Updates single or multiple documents in the collection according to the specified arguments
+```ruby
+  db[:zips].find(:state => 'MD').count
+  db[:zips].find(:state => 'MD').update_many(:$set => {:state => 'XX'})
+  db[:zips].find(:state => 'MD').count db[:zips].find(:state => 'XX').count
+```
+
+### delete_one
+* delete_one – will delete a single document in the collection according to the specified arguments
+```ruby
+db[:zips].find(:city => 'name2').count 
+db[:zips].find(:city =>'name2').delete_one()
+db[:zips].find(:city => 'name2').count
+```
+### delete_many
+* delete_many – deletes single or multiple documents in the collection according to the specified arguments
+
+```ruby
+db[:zips].find(:state => 'MD' ).delete_many()
+```
+### upsert
+* If upsert is true and no document matches the query criteria, update() inserts a single document.
+```ruby
+db[:zips].find(:city => "ODENVILLE1").count
+db[:zips].find(:city => "ODENVILLE2").count
+db[:zips].find(:city => "ODENVILLE1").update_one({:$set => {:city => "ODENVILLE2"}}, :upsert => true)
+db[:zips].find(:city => "ODENVILLE1").count db[:zips].find(:city => "ODENVILLE2").count
 
