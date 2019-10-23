@@ -228,3 +228,21 @@ end
 ```ruby
 	puts ENV['EDITOR']
 ```
+
+### * Operator
+    
+ Here, the list from which the new array gets constructed contains one item: the object array. That object hasn’t been mined for its inner elements, as it was in the example with the star.
+ One implication is that you can use the star in front of a method argument to turn it from an array into a list. You do this in cases where you have objects in an array that you need to send to a method that’s expecting a broken-out list of arguments:
+    
+```   
+    def combine_names(first_name, last_name)
+      first_name + " " + last_name
+    End
+    
+    names = ["David", "Black"]
+    puts combine_names(*names)
+    
+   ```
+ 
+ If you don’t use the unarraying star, you’ll send just one argument—an array—to the method, and the method won’t be happy.
+
